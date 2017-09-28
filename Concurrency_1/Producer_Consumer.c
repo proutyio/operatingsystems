@@ -47,7 +47,6 @@ void* producer()
 {	
 	while(1) {
 		if(item_count == FULL) {
-			//item_count--;
 			pthread_cond_wait(&full_cond, &m_lock);
 		} else {
 			pthread_mutex_lock(&m_lock);
@@ -79,7 +78,6 @@ void* consumer()
 			item_count--;
 			pthread_mutex_unlock(&m_lock);
 			pthread_cond_signal(&full_cond);
-			
 		}
 	}
 }
