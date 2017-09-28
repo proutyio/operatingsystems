@@ -2,7 +2,7 @@
 *	Kyle Prouty
 *	Nathaniel Whitlock
 *
-*	Operating Systems 2 - Fall 2017-2018
+*	Operating Systems 2 - Fall 2017/2018
 *	Concurrency Problem 1		
 */
 #include <stdio.h>
@@ -51,8 +51,8 @@ void* producer()
 		} else {
 			pthread_mutex_lock(&m_lock);
 			sleep(random_int(3,7));
-			//buffer[item_count].item = random_int(0,10);
-			//buffer[item_count].sleep = random_int(2,9);
+			buffer[item_count].item = random_int(0,10);
+			buffer[item_count].sleep = random_int(2,9);
 			
 			debug_print(); //REMOVE ME
 			
@@ -72,9 +72,8 @@ void* consumer()
 		} else {
 			//pthread_mutex_lock(&m_lock);
 			//printf("%d\n", buffer[item_count-1].sleep);
-			//sleep(buffer[item_count].sleep); 
-			sleep(4);
-			printf("%s%d\n","Consuming: ",1);//buffer[item_count].item);
+			printf("%s%d\n","Consuming: ",buffer[item_count-1].item);
+			sleep(buffer[item_count-1].sleep); 
 			item_count--;
 			pthread_mutex_unlock(&m_lock);
 			pthread_cond_signal(&full_cond);
@@ -94,5 +93,5 @@ int random_int(int min, int max)
 void debug_print() //REMOVE ME
 {
 	printf("item_count: %d\n", item_count);
-	//printf("%s\t%d\t%d\n","Produce:",buffer[item_count].item, buffer[item_count].sleep); 
+	printf("%s\t%d\t%d\n","Produce:",buffer[item_count].item, buffer[item_count].sleep); 
 }
