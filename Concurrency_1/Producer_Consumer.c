@@ -11,7 +11,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#define FULL 2//32
+#define FULL 32
 #define EMPTY 0
 
 pthread_t p_id;
@@ -70,8 +70,6 @@ void* consumer()
 		if(item_count == EMPTY) {
 			pthread_cond_wait(&empty_cond, &m_lock);
 		} else {
-			//pthread_mutex_lock(&m_lock);
-			//printf("%d\n", buffer[item_count-1].sleep);
 			printf("%s%d\n","Consuming: ",buffer[item_count-1].item);
 			sleep(buffer[item_count-1].sleep); 
 			item_count--;
