@@ -11,11 +11,12 @@
 #include <time.h>
 #include <unistd.h>
 
-#define FULL 4
+#define FULL 32
 #define EMPTY 0
+#define THREADS 10
 
-pthread_t p_id[2];
-pthread_t c_id[2];
+pthread_t p_id[THREADS];
+pthread_t c_id[THREADS];
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t p_cond = PTHREAD_COND_INITIALIZER;
 pthread_cond_t c_cond = PTHREAD_COND_INITIALIZER;
@@ -27,27 +28,33 @@ struct Buffer {
 }; 
 struct Buffer buffer[FULL];
 
-void* producer();
+void* producer(void *x);
 void* consumer();
 int random_int();
-void debug_print(); //REMOVE ME
+void debug_print(unsigned int x); //REMOVE ME
 
 
 int main() 
 {
-	pthread_create(&p_id[0], NULL, producer, NULL);
-	pthread_create(&p_id[1], NULL, producer, NULL);
-	pthread_create(&c_id[0], NULL, consumer, NULL);
-	pthread_create(&c_id[1], NULL, consumer, NULL);
+	unsigned int current_producer[THREADS];
 
-	pthread_join(c_id[0], NULL);
-	pthread_join(c_id[1], NULL);
+	for(int i=0; i<THREADS; i++) {
+		current_producer[i] = i;
+		pthread_create(&p_id[i], NULL, producer, &current_producer[i]);
+		pthread_create(&c_id[i], NULL, consumer, NULL);
+	}
+
+	for(int i=0; i<THREADS; i++)
+		pthread_join(c_id[i], NULL);
+
 	return 0;
 }
 
 
-void* producer()
+void* producer(void *x)
 {	
+	unsigned int current_producer = *((unsigned int *) x);
+	
 	while(1) {
 		if(pthread_mutex_trylock(&mutex) == 0) {
 			sleep(random_int(3,7));
@@ -58,7 +65,9 @@ void* producer()
 			}
 			buffer[items].item = random_int(0,10);
 			buffer[items].sleep = random_int(2,9);
-			debug_print(); //REMOVE ME
+			
+			debug_print(current_producer); //REMOVE ME
+			
 			items++;
 			pthread_mutex_unlock(&mutex);
 			pthread_cond_broadcast(&c_cond);
@@ -75,11 +84,11 @@ void* consumer()
 				pthread_cond_wait(&c_cond, &mutex);
 				pthread_mutex_unlock(&mutex);
 			} 
-			printf("%s%d\n","Consuming: ",buffer[items-1].item);
 			sleep(buffer[items-1].sleep); 
+			printf("%s%d\n","Consuming: ",buffer[items-1].item);
 			items--;
-			pthread_mutex_unlock(&mutex);
 			pthread_cond_broadcast(&p_cond);
+			pthread_mutex_unlock(&mutex);
 		}
 	}
 }
@@ -93,8 +102,8 @@ int random_int(int min, int max)
 }
 
 
-void debug_print() //REMOVE ME
+void debug_print(unsigned int x) //REMOVE ME
 {
-	printf("items: %d\n", items);
-	printf("%s\t%d\t%d\n","Produce:",buffer[items].item, buffer[items].sleep); 
+	printf("buffer: %d\n", items);
+	printf("%s%i%s\t%d\t%d\n","Produce ",x,":",buffer[items].item, buffer[items].sleep); 
 }
