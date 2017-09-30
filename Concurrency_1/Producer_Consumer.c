@@ -31,12 +31,12 @@ struct Buffer buffer[FULL];
 void* producer(void *x);
 void* consumer();
 int random_int();
-void debug_print(unsigned int x); //REMOVE ME
+void debug_print(int x); //REMOVE ME
 
 
 int main() 
 {
-	unsigned int current_producer[THREADS];
+	int current_producer[THREADS];
 
 	for(int i=0; i<THREADS; i++) {
 		current_producer[i] = i;
@@ -53,7 +53,7 @@ int main()
 
 void* producer(void *x)
 {	
-	unsigned int current_producer = *((unsigned int *) x);
+	int current_producer = *((int *) x);
 	
 	while(1) {
 		if(pthread_mutex_trylock(&mutex) == 0) {
@@ -102,8 +102,8 @@ int random_int(int min, int max)
 }
 
 
-void debug_print(unsigned int x) //REMOVE ME
+void debug_print(int x) //REMOVE ME
 {
 	printf("buffer: %d\n", items);
-	printf("%s%i%s\t%d\t%d\n","Produce ",x,":",buffer[items].item, buffer[items].sleep); 
+	printf("%s%i%s\t%d\t%d\n","Producer ",x,":",buffer[items].item, buffer[items].sleep); 
 }
