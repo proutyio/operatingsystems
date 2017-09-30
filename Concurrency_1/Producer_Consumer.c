@@ -49,7 +49,6 @@ int main()
 void* producer()
 {	
 	while(1) {
-		
 		if(pthread_mutex_trylock(&mutex) == 0) {
 			sleep(random_int(3,7));
 
@@ -57,12 +56,12 @@ void* producer()
 				pthread_cond_wait(&p_cond, &mutex);
 				pthread_mutex_unlock(&mutex);
 			}
-				buffer[items].item = random_int(0,10);
-				buffer[items].sleep = random_int(2,9);
-				debug_print(); //REMOVE ME
-				items++;
-				pthread_mutex_unlock(&mutex);
-				pthread_cond_broadcast(&c_cond);
+			buffer[items].item = random_int(0,10);
+			buffer[items].sleep = random_int(2,9);
+			debug_print(); //REMOVE ME
+			items++;
+			pthread_mutex_unlock(&mutex);
+			pthread_cond_broadcast(&c_cond);
 		}
 	}
 }
@@ -76,11 +75,11 @@ void* consumer()
 				pthread_cond_wait(&c_cond, &mutex);
 				pthread_mutex_unlock(&mutex);
 			} 
-				printf("%s%d\n","Consuming: ",buffer[items-1].item);
-				sleep(buffer[items-1].sleep); 
-				items--;
-				pthread_mutex_unlock(&mutex);
-				pthread_cond_broadcast(&p_cond);
+			printf("%s%d\n","Consuming: ",buffer[items-1].item);
+			sleep(buffer[items-1].sleep); 
+			items--;
+			pthread_mutex_unlock(&mutex);
+			pthread_cond_broadcast(&p_cond);
 		}
 	}
 }
