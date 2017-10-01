@@ -42,7 +42,6 @@ int rdrand();
 int main() 
 {
 	check_rdrand();
-	//printf("%i\n",random_int(2,9));
 	 
 	int p[THREADS];
 	int c[THREADS];
@@ -112,10 +111,9 @@ int random_int(int min, int max)
 	if(check == 1) {
 		value = abs(rdrand() % ((max+1) - min)) + min;
 	} else {
-		value = genrand_int32() % (max + min);
+		value = (genrand_int32() % ((max-3) + min)) + min;
 	}
-	//printf("%i\n",abs(value) );
-	return abs(value);
+	return value;
 }
 
 int rdrand()
