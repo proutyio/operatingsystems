@@ -96,12 +96,12 @@ void* consumer(void *x)
 
 void check_rdrand()
 {
-    unsigned int a,b,c,d, reg = (1 << 30);
-    __cpuid(1, a, b, c, d);
-    if( ((c & reg) == reg) == 1)
-    	check = 1;
-    else 
-    	check = 0;
+	unsigned int a,b,c,d, reg = (1 << 30);
+	__cpuid(1, a, b, c, d);
+	if( ((c & reg) == reg) == 1)
+		check = 1;
+	else 
+		check = 0;
 }
 
 int random_int(int min, int max)
