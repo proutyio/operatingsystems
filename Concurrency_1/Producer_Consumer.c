@@ -34,7 +34,7 @@ struct Buffer buffer[FULL];
 
 void* producer(void *x);
 void* consumer(void *x);
-int check_rdrand();
+void check_rdrand();
 int random_int();
 int rdrand();
 
@@ -42,7 +42,6 @@ int rdrand();
 int main() 
 {
 	check_rdrand();
-	 
 	int p[THREADS];
 	int c[THREADS];
 	for(int i=0; i<THREADS; i++) {
@@ -95,7 +94,7 @@ void* consumer(void *x)
 	}
 }
 
-int check_rdrand()
+void check_rdrand()
 {
     unsigned int a,b,c,d, reg = (1 << 30);
     __cpuid(1, a, b, c, d);
@@ -107,13 +106,12 @@ int check_rdrand()
 
 int random_int(int min, int max)
 {
-	int value = 0;
-	if(check == 1) {
-		value = abs(rdrand() % ((max+1) - min)) + min;
-	} else {
-		value = (genrand_int32() % ((max-3) + min)) + min;
-	}
-	return value;
+	int x = 0;
+	if(check == 1) 
+		x = abs(rdrand() % ((max+1) - min)) + min;
+	else 
+		x = (genrand_int32() % ((max-3) + min)) + min;
+	return x;
 }
 
 int rdrand()
