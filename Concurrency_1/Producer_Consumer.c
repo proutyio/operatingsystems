@@ -37,11 +37,13 @@ void* consumer(void *x);
 void check_rdrand();
 int random_int();
 int rdrand();
+void display();
 
 
 int main() 
 {
 	check_rdrand();
+	display();
 	int p[THREADS];
 	int c[THREADS];
 	for(int i=0; i<THREADS; i++) {
@@ -119,4 +121,15 @@ int rdrand()
 	unsigned int x;
 	__asm__("rdrand  %[x]": [x] "=r" (x) :: "cc");
 	return x;	
+}
+
+void display()
+{	
+	char* s;
+	if(check == 1)
+		s = "YES";
+	else
+		s = "NO";
+	printf("%s\n%s%i\n%s%i\n%s%s\n%s\n","-----","Producers: ",THREADS,
+		"Consumers: ",THREADS,"RDRand supported?: ",s,"-----");
 }
