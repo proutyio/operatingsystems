@@ -1,0 +1,174 @@
+\documentclass[a4paper]{article}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=0.5in,bottom=0.25in,left=1in,right=1in,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage[colorinlistoftodos]{todonotes}
+% \usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{makecell}
+
+% Support for typesetting algorithms
+\usepackage{CJK}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+
+% Format settings
+\setlength\parindent{0pt}
+
+\title{CS 444: Project One\\\Large{Getting Acquainted}}
+
+\author{Kyle Prouty \&\\Nathaniel Whitlock}
+
+\begin{document}
+\maketitle
+
+\section{Concurrency Solution} 
+Our program starts by first checking that RdRand is supported and if it is supported a flag variable is set so that random numbers will generate using an assembly call to RdRand. If RdRand is not supported then the flag will not be set and the supplied Mersenne Twister library is then used to generate the random values used throughout the programs execution. \\
+
+Next our program uses a for loop to spawn multiple producer and consumer threads, passing the current thread count to the threads so that the user can see which thread is doing what. After the threads are created we then call join on the consumer threads in order to move the execution from the calling thread to a consumer thread. \\
+
+All the threads are competing for the same mutex lock, so as soon as the execution moves to the consumer threads, the first one to lock gets to do the work. Once a consumer thread locks, it then checks that if the buffer is empty before trying to add to it. If the buffer is full, the program blocks using a conditional wait variable and then unlocks the mutex. When the while loop blocks on the conditional variable it causes the current thread to sleep and allow another thread to grab the lock. If the buffer was not full after the consumer thread locked then the consumer will sleep for a random amount of time to show the work used to consume, then print to the console the value that was consumed. After the work has been done to consume the consumer thread unblocks any thread that is being blocked on the producer conditional variable and then unlocks the mutex so that another thread can grab the lock. \\
+
+Producers and consumer threads do basically the same thing, they try to lock, if they get the lock then they check the buffer. If the buffer is full/empty they block on a conditional variable and then unlock the mutex so that another thread that is not blocked can grab the mutex. When the buffer is not full/empty, producers and consumers then do the work that they need to either consumer or produce and then unblock any threads block by the opposite conditional variable, then unlock the mutex so that another thread can grab the mutex and start the process over. Both the consumer and producer threads are sitting in infinite loops so that any spawned threads will continue running until the users explicitly quits the program.
+
+
+\subsection{What do you think the main point of this assignment is?}
+% Nate is working here
+This main point of this assignment is to exercise the use of a mutex to manage a multi-process environment. The producer-consumer problem not only resembles multi-threaded execution, but also of the client-host relationship in regards to networking traffic. The organized interaction between producers, consumers and the buffer structure is important so that neither entity destructively interfere will the other. In doing so, execution time can be split among threads, leading to shared workload that can be completed faster. There is some added overhead created by the need to ensure the consumers only interact with the storage buffer at appropriate times, else they should wa
+
+% Integrate into the paragraph above
+I think the main point of this assignment was to understand how a bunch of different threads can access the same shared values without causing deadlocks or race conditions. The assignment was asking us how do we protect shared values when lots of different threads are trying to access that same variable.
+
+\subsection{How did you personally approach the problem? Design decisions, algorithms, etc.}
+I started this assignment by reading through the assignment and white boarding my initial impressions of how I thought the code might work. After that I went and looked up the pthread library to refresh my understanding. While looking through the library I found a few functions that seemed to fit this project perfectly, pthread\_cond\_wait and pthread\_cond\_broadcast. Once I discovered the proper tools, I then went back to my white board and wrote out the sudo code for the program. I immediately took a break after my first go at sudo code so I could go back to thinking about the problem and then come back and modify my sudo code. When I felt confident that I had gone as far as a could with sudo code I then started writing the actual C code. 
+
+
+\subsection{How did you ensure your solution was correct? Testing details?}
+We tested that my solution was correct in a number of ways.  
+
+\subsection{What did you learn?}
+Temp
+
+\section{Command Log}
+\subsection{Kernel assignment}
+\begin{itemize}
+  \item Clone git repo: 
+    \begin{itemize}
+      \item git clone git://git.yoctoproject.org/linux-yocto-3.19
+    \end{itemize}
+    \item Checkout v3.19.2 (From cloned repo): 
+    \begin{itemize}
+      \item git checkout tags/v3.19.2
+    \end{itemize}
+    \item Copy configuration file: 
+    \begin{itemize}
+      \item cp /scratch/files/config-3.19.2-yocto-standard linux-yocto-3.19/.config
+    \end{itemize}
+    \item Copy image and core files: 
+    \begin{itemize}
+      \item cp /scratch/files/bzImage-qemux86.bin /scratch/fall2017/18/
+        \item cp /scratch/files/core-image-lsb-sdk-qemux86.ext4  /scratch/fall2017/18/
+    \end{itemize}
+    \item Source environment variables (BASH):
+        \begin{itemize}
+          \item source /scratch/files/environment-setup-i586-poky-linux
+        \end{itemize}
+        \item Kernel build: 
+        \begin{itemize}
+          \item make -j4 all
+        \end{itemize}
+        \item Run VM (From home): 
+        \begin{itemize}
+          \item qemu-system-i386 -gdb tcp::5518 -S -nographic -kernel bzImage-qemux86.bin -drive file=core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append ``root=/dev/vda rw console=ttyS0 debug''
+         \end{itemize}
+    \item Using GDB to continue VM:
+    \begin{itemize}
+      \item Establish secondary ssh connection to OSII server and login
+        \item Launch gdb:
+        \begin{itemize}
+          \item target remote :5518
+            \item continue
+        \end{itemize}
+    \item Logging into VM (From primary ssh connection):
+    \begin{itemize}
+      \item username: root
+        \item password: (blank)
+    \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+
+% qemu commands broken down
+\subsection{Qemu-system-i386 Command Breakdown}
+\begin{itemize}
+  \item -gdb: Wait for gdb connection, optionally pass argument for target host
+    \item tcp: Specify the transmission control protocol port number
+    \item -nographic: Disable graphical output and redirect serial I/Os to console
+    \item -kernel: Specify the kernel image to use, use 'bzImage'
+    \item -drive: Specify the file system, use file argument as a drive image
+    \item if=virtio: Conditional check for virtual IO?
+    \item -enable-kvm: Enable kernel virutal machine full virtualization support
+    \item -net none: Enables zero network devices
+    \item -usb: Enable the usb driver
+    \item -localtime: 
+    \item --no-reboot: Exit instead of rebooting
+    \item --append ``root=/dev/vda rw console=ttyS0 debug'': Specify kernel command line
+    \item -S: Freeze cpu at startup
+\end{itemize}
+\section{Version Control Log}
+The table below represents the commit log for our class repository. The majority of the commits were done by Kyle Prouty, he spearheaded the concurrency assignment and generated the most code based material for the assignment. \\
+
+\input{changelog.tex}
+
+
+% Should contain
+% - Kyle's work on the concurrency assignment
+% - Nate's work on the write up, including kernel exercise solution
+
+\section{Work Log}
+Each week since the class started, both of us have met directly after Operating Systems in the Valley Public Library. During these sessions we worked on the following items:
+\begin{itemize}
+  \item Kyle Prouty: 
+    \begin{itemize}
+          \item Week One:
+          \begin{itemize}
+              \item Created git repository
+              \item Started working on the concurrency assignment
+              \item Temp
+          \end{itemize}
+          \item Week Two:
+          \begin{itemize}
+              \item Temp
+          \end{itemize}
+        \end{itemize}
+    \item Nathaniel Whitlock:
+    \begin{itemize}
+      \item Week One:
+        \begin{itemize}
+          \item Began working on the kernel assignment
+            \item Ran into issues getting the qemu command to work, provided command was incomplete
+            \item Created outline for paper write-up
+        \end{itemize}
+        \item Week Two:
+        \begin{itemize}
+          \item Completed kernel assignment and wrote up commands used
+            \item Finished qemu command breakdown
+            \item Used script to generate commit log in \LaTeX
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\end{document}
