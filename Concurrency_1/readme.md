@@ -6,7 +6,7 @@ This directory contains both the concurrency assignment solution
 and the LaTeX write up. In order to build the files plese complete
 the following, in order:
 
-Note: All commands should be run from the Concurrency_1 directory within the OSU_CS444 repo
+Note: All commands should be run from the Homework_One_18/ directory
 
 LaTeX Writing Assignment:
 
