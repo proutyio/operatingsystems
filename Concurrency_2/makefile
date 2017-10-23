@@ -8,3 +8,4 @@ run:
 
 clean:
 	rm -f Dining_Philosophers *~
+

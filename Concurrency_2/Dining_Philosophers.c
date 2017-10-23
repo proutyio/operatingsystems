@@ -15,9 +15,8 @@
 #include "mt19937ar.c"
 
 #define THREADS 10
-#define PHILOSOPHERS 5
-#define EMPTY 0
-
+#define FULL 32
+#define EMPTY 0 
 /*
  * Philosophers:
  * - Immanuel_Kant
