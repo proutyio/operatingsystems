@@ -30,14 +30,14 @@ static int noop_dispatch(struct request_queue *q, int force)
 		struct request *rq;
 		rq = list_entry(nd->queue.next, struct request, queuelist);
 		
-		char operaton;
+		char *operation;
 		if (rq_data_dir(rq))
 		  operation = "Write";
 		else
 		  operation = "Read";
 
-		printk("\n%s%lu\n%s%c", "In Dispatch\nRequest: ", blk_rq_pos(rq),
-		       "Operation: ", operation);
+		printk("\n%s%llu\n%s%c\n", "In Dispatch\nRequest: ",(unsigned long long)blk_rq_pos(rq),
+		       "Operation: ", *operation);
 
 		list_del_init(&rq->queuelist);
 		elv_dispatch_sort(q, rq);
@@ -50,19 +50,42 @@ static int noop_dispatch(struct request_queue *q, int force)
 static void noop_add_request(struct request_queue *q, struct request *rq)
 {
 	struct noop_data *nd = q->elevator->elevator_data;
-
-	char operaton;
+	struct list_head *link = NULL;
+	
+	char *operation;
 	if (rq_data_dir(rq))
 	  operation = "Write";
 	else
 	  operation = "Read";
 
-	printk("\n%s%lu\n%s%c\n", "In Add\nNoop Data: ", blk_rq_pos(rq),
-	       "Operation: ", operation);
+	printk("\n%s%llu\n%s%c\n", "In Add\nNoop Data: ", (unsigned long long)blk_rq_pos(rq),
+	       "Operation: ", *operation);
  
 	/*
-	 * Add new request to tail of linked list\
+	 * Add new request to tail of linked list
+	 * Need to add insertion logic here
+	 * - If sector is less than head, then list_add_tail()
+	 * - Else, list_add()
+	 * - Sort each part of list larger and smaller than head sector
+  	 *
+	 * Issues:
+	 * - Double linked list is circular, so two sorts does not make sense
+	 * - Consider using list_sort() from list.h
 	 */
+
+
+	/*
+	 * Iterate through all requests
+	 */
+	list_for_each(link, &nd->queue){
+	  /*
+	   * Check for larger sector request, when request sector is less than the current
+	   * link, then break and insert before that link
+ 	   */
+	  if(rq_end_sector(list_entry(link, struct request, queuelist)) > rq_end_sector(rq)){
+	      break;
+	  }
+	}
 	list_add_tail(&rq->queuelist, &nd->queue);
 
 }
