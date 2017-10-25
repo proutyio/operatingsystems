@@ -56,17 +56,8 @@ void* philosopher(void* args)
 	*	Philosopher needs to know what forks he can grab
 	*/
 	struct holding *forks = args;
-	char left[20];
-	char right[20];
-	snprintf(left, sizeof(left), "%s%i","fork_", forks->left_fork);
-	snprintf(right,sizeof(right),"%s%i","fork_", forks->right_fork);
-	
-	printf("%s\n", left);
-	printf("%s\n", right);
-	printf("%i\n", forks->left_fork);
-	printf("%i\n", forks->right_fork);
-}
 
+}
 
 int rand_wait(int min, int max)
 {
