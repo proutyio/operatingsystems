@@ -30,33 +30,49 @@ pthread_mutex_t fork_4 = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t fork_5 = PTHREAD_MUTEX_INITIALIZER;
 
 
+struct holding {
+	int left_fork;
+	int right_fork;
+};
+//struct holding forks[4];
 
-void* philosopher(void *x);
 
-void rand_wait(int min,int max);
+
+void* philosopher(void* arg);
+int rand_wait(int min,int max);
 
 
 
 int main() 
 {
+	struct holding forks[4];
+
+	forks[0].left_fork=5;
+	forks[0].right_fork=1;	
+
+	philosopher((void*)&forks[0]);
+
 	
 	return 0;
 }
 
 
 
-void* philosopher(void *x)
+void* philosopher(void* args)
 {
-  int philosopher = *((int *) x);
-  while(1) {
-    /*
-     * think()
-     * get_forks()
-     * eat()
-     * put_forks()
-     */
-  }
-	
+	struct holding *forks = args;
+
+	printf("%i\n", forks->left_fork);
+	printf("%i\n", forks->right_fork);
+}
+
+
+
+int rand_wait(int min, int max)
+{
+	srand(time(NULL));
+	int r = rand() % (max - min) + min;
+	return r;
 }
 
 
