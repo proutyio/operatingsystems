@@ -1,6 +1,6 @@
 all: compile
 
-compile: Dining_Philosophers.c mt19937ar.c
+compile: Dining_Philosophers.c
 	gcc -o Dining_Philosophers Dining_Philosophers.c -pthread -std=c99
 
 run:
