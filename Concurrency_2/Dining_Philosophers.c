@@ -5,12 +5,6 @@
 *	Operating Systems 2 - Fall 2017/2018
 *	Concurrency Problem 2
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <time.h>
-#include <unistd.h>
-
 
 /*
  * Philosophers:
@@ -20,7 +14,11 @@
  * - Thomas_Aquinas 
  * - John_Locke
  */
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <time.h>
+#include <unistd.h>
 
 pthread_t id[5];
 pthread_mutex_t fork_1 = PTHREAD_MUTEX_INITIALIZER;
@@ -29,18 +27,13 @@ pthread_mutex_t fork_3 = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t fork_4 = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t fork_5 = PTHREAD_MUTEX_INITIALIZER;
 
-
 struct holding {
 	int left_fork;
 	int right_fork;
 };
-//struct holding forks[4];
-
-
 
 void* philosopher(void* arg);
 int rand_wait(int min,int max);
-
 
 
 int main() 
@@ -57,15 +50,22 @@ int main()
 }
 
 
-
 void* philosopher(void* args)
 {
+	/* 
+	*	Philosopher needs to know what forks he can grab
+	*/
 	struct holding *forks = args;
-
+	char left[20];
+	char right[20];
+	snprintf(left, sizeof(left), "%s%i","fork_", forks->left_fork);
+	snprintf(right,sizeof(right),"%s%i","fork_", forks->right_fork);
+	
+	printf("%s\n", left);
+	printf("%s\n", right);
 	printf("%i\n", forks->left_fork);
 	printf("%i\n", forks->right_fork);
 }
-
 
 
 int rand_wait(int min, int max)
@@ -74,5 +74,3 @@ int rand_wait(int min, int max)
 	int r = rand() % (max - min) + min;
 	return r;
 }
-
-
