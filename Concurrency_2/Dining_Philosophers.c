@@ -73,12 +73,12 @@ void* immanuel_kant(void* arg)
 				if(pthread_mutex_trylock(&lock) == 0) {
 					x = rand_wait(2,9);
 					pthread_mutex_unlock(&lock);
+					printf("%s%d\n","Immanuel Kant: \t\tEATING for ",x);
+					sleep(x);
+					think= 0;
+					pthread_mutex_unlock(&fork_5);
+					pthread_mutex_unlock(&fork_1);
 				}
-				printf("%s%d\n","Immanuel Kant: \t\tEATING for ",x);
-				sleep(x);
-				think= 0;
-				pthread_mutex_unlock(&fork_5);
-				pthread_mutex_unlock(&fork_1);
 			} else {
 				think = 1;
 				pthread_mutex_unlock(&fork_5);
@@ -113,12 +113,12 @@ void* friedrich_nietzsche(void* arg)
 				if(pthread_mutex_trylock(&lock) == 0) {
 					y = rand_wait(2,9);
 					pthread_mutex_unlock(&lock);
+					printf("%s%d\n","Friedrich Nietzsche: \tEATING for ",y);
+					sleep(y);
+					think= 0;
+					pthread_mutex_unlock(&fork_1);
+					pthread_mutex_unlock(&fork_2);
 				}
-				printf("%s%d\n","Friedrich Nietzsche: \tEATING for ",y);
-				sleep(x);
-				think= 0;
-				pthread_mutex_unlock(&fork_1);
-				pthread_mutex_unlock(&fork_2);
 			} else {
 				think = 1;
 				pthread_mutex_unlock(&fork_1);
@@ -154,12 +154,13 @@ void* rene_descartes(void* arg)
 				if(pthread_mutex_trylock(&lock) == 0) {
 					x = rand_wait(2,9);
 					pthread_mutex_unlock(&lock);
+					printf("%s%d\n","Rene Descartes: \tEATING for ",x);
+					sleep(x);
+					think= 0;
+					pthread_mutex_unlock(&fork_2);
+					pthread_mutex_unlock(&fork_3);
 				}
-				printf("%s%d\n","Rene Descartes: \tEATING for ",x);
-				sleep(x);
-				think= 0;
-				pthread_mutex_unlock(&fork_2);
-				pthread_mutex_unlock(&fork_3);
+				
 			} else {
 				think = 1;
 				pthread_mutex_unlock(&fork_2);
@@ -194,12 +195,12 @@ void* thomas_aquinas(void* arg)
 				if(pthread_mutex_trylock(&lock) == 0) {
 					x = rand_wait(2,9);
 					pthread_mutex_unlock(&lock);
+					printf("%s%d\n","Thomas Aquinas: \tEATING for ",x);
+					sleep(x);
+					think= 0;
+					pthread_mutex_unlock(&fork_3);
+					pthread_mutex_unlock(&fork_4);
 				}
-				printf("%s%d\n","Thomas Aquinas: \tEATING for ",x);
-				sleep(x);
-				think= 0;
-				pthread_mutex_unlock(&fork_3);
-				pthread_mutex_unlock(&fork_4);
 			} else {
 				think = 1;
 				pthread_mutex_unlock(&fork_3);
@@ -234,12 +235,12 @@ void* john_locke(void* arg)
 				if(pthread_mutex_trylock(&lock) == 0) {
 					x = rand_wait(2,9);
 					pthread_mutex_unlock(&lock);
+					printf("%s%d\n","John Locke: \t\tEATING for ",x);
+					sleep(x);
+					think= 0;
+					pthread_mutex_unlock(&fork_4);
+					pthread_mutex_unlock(&fork_5);
 				}
-				printf("%s%d\n","John Locke: \t\tEATING for ",x);
-				sleep(x);
-				think= 0;
-				pthread_mutex_unlock(&fork_4);
-				pthread_mutex_unlock(&fork_5);
 			} else {
 				think = 1;
 				pthread_mutex_unlock(&fork_4);
