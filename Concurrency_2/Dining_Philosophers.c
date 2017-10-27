@@ -58,15 +58,18 @@ void* immanuel_kant(void* arg)
 {
 	int think = 0;
 	while(1) {
-		
+	
 		if(!think){
 			int x = 0;
-			if(pthread_mutex_trylock(&lock) == 0) {
-				x = rand_wait(1,20);
-				pthread_mutex_unlock(&lock);
-				printf("%s\n","Immanuel Kant: \t\tTHINKING");
-				sleep(x);
-			}	
+			while(1) {
+				if(pthread_mutex_trylock(&lock) == 0) {
+					x = rand_wait(1,20);
+					pthread_mutex_unlock(&lock);
+					printf("%s\n","Immanuel Kant: \t\tTHINKING");
+					sleep(x);
+					break;
+				}	
+			}
 		}
 
 		if(pthread_mutex_trylock(&fork_5) == 0) {
@@ -89,7 +92,6 @@ void* immanuel_kant(void* arg)
 		} else {
 			think = 1;
 			pthread_mutex_unlock(&fork_5);
-			pthread_mutex_unlock(&fork_1);
 		}
 	}
 }
@@ -97,26 +99,29 @@ void* immanuel_kant(void* arg)
 void* friedrich_nietzsche(void* arg)
 {
 	int think = 0;
-	int x = 0;
-	int y =0;
 	while(1) {
 		
 		if(!think){
-			if(pthread_mutex_trylock(&lock) == 0) {
-				x = rand_wait(1,20);
-				pthread_mutex_unlock(&lock);
-				printf("%s\n","Friedrich Nietzsche: \tTHINKING");
-				sleep(x);
+			int x = 0;
+			while(1) {
+				if(pthread_mutex_trylock(&lock) == 0) {
+					x = rand_wait(1,20);
+					pthread_mutex_unlock(&lock);
+					printf("%s\n","Friedrich Nietzsche: \tTHINKING");
+					sleep(x);
+					break;
+				}
 			}
 		}
 
 		if(pthread_mutex_trylock(&fork_1) == 0) {
 			if(pthread_mutex_trylock(&fork_2) == 0) {
+				int x =0;
 				if(pthread_mutex_trylock(&lock) == 0) {
-					y = rand_wait(2,9);
+					x = rand_wait(2,9);
 					pthread_mutex_unlock(&lock);
 					printf("%s\n","Friedrich Nietzsche: \tEATING");
-					sleep(y);
+					sleep(x);
 					think= 0;
 					pthread_mutex_unlock(&fork_1);
 					pthread_mutex_unlock(&fork_2);
@@ -142,11 +147,14 @@ void* rene_descartes(void* arg)
 		
 		if(!think){
 			int x = 0;
-			if(pthread_mutex_trylock(&lock) == 0) {
-				x = rand_wait(1,20);
-				pthread_mutex_unlock(&lock);
-				printf("%s\n","Rene Descartes: \tTHINKING");
-				sleep(x);
+			while(1) {
+				if(pthread_mutex_trylock(&lock) == 0) {
+					x = rand_wait(1,20);
+					pthread_mutex_unlock(&lock);
+					printf("%s\n","Rene Descartes: \tTHINKING");
+					sleep(x);
+					break;
+				}
 			}
 		}
 
@@ -183,11 +191,14 @@ void* thomas_aquinas(void* arg)
 		
 		if(!think){
 			int x = 0;
-			if(pthread_mutex_trylock(&lock) == 0) {
-				x = rand_wait(1,20);
-				pthread_mutex_unlock(&lock);
-				printf("%s\n","Thomas Aquinas: \tTHINKING");
-				sleep(x);
+			while(1) {
+				if(pthread_mutex_trylock(&lock) == 0) {
+					x = rand_wait(1,20);
+					pthread_mutex_unlock(&lock);
+					printf("%s\n","Thomas Aquinas: \tTHINKING");
+					sleep(x);
+					break;
+				}
 			}
 		}
 
@@ -223,11 +234,14 @@ void* john_locke(void* arg)
 		
 		if(!think){
 			int x = 0;
-			if(pthread_mutex_trylock(&lock) == 0) {
-				x = rand_wait(1,20);
-				pthread_mutex_unlock(&lock);
-				printf("%s\n","John Locke: \t\tTHINKING");
-				sleep(x);
+			while(1) {
+				if(pthread_mutex_trylock(&lock) == 0) {
+					x = rand_wait(1,20);
+					pthread_mutex_unlock(&lock);
+					printf("%s\n","John Locke: \t\tTHINKING");
+					sleep(x);
+					break;
+				}
 			}
 		}
 
