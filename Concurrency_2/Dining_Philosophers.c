@@ -27,10 +27,6 @@ pthread_mutex_t fork_3 = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t fork_4 = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t fork_5 = PTHREAD_MUTEX_INITIALIZER;
 
-struct holding {
-	int left_fork;
-	int right_fork;
-};
 
 void* philosopher(void* arg);
 int rand_wait(int min,int max);
@@ -38,12 +34,7 @@ int rand_wait(int min,int max);
 
 int main() 
 {
-	struct holding forks[4];
-
-	forks[0].left_fork=5;
-	forks[0].right_fork=1;	
-
-	philosopher((void*)&forks[0]);
+	
 
 	
 	return 0;
@@ -52,10 +43,38 @@ int main()
 
 void* philosopher(void* args)
 {
-	/* 
-	*	Philosopher needs to know what forks he can grab
+	int think = 0;
+	if(!think)
+		sleep(rand_wait(3,7));
+
+	if(pthread_mutex_trylock(&fork_5) == 0) {
+		if(pthread_mutex_trylock(&fork_1) == 0) {
+			sleep(rand_wait(3,7));
+			think= 0;
+		} else {
+			pthread_mutex_unlock(&fork_5);
+			pthread_mutex_unlock(&fork_1);
+		}
+	} else {
+		think = 1;
+		pthread_mutex_unlock(&fork_5);
+		pthread_mutex_unlock(&fork_1);
+	}
+			
+
+	/*
+		check think flag, if set then think
+		trylock on left fork
+			drop if no lock
+			
+			trylock on right fork
+				drop if no lock
+
+				if locked on both forks, eat.
+				drop forks
+				set flag to think
+		
 	*/
-	struct holding *forks = args;
 
 }
 
