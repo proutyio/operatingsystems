@@ -36,7 +36,9 @@ int main()
 {
 	
 
-	
+	pthread_create(&id[0], NULL, philosopher, NULL);
+	pthread_join(id[0], NULL);
+
 	return 0;
 }
 
@@ -44,37 +46,31 @@ int main()
 void* philosopher(void* args)
 {
 	int think = 0;
-	if(!think)
-		sleep(rand_wait(3,7));
+	while(1) {
+		if(!think){
+			printf("Immanuel_Kant: Thinking");
+			sleep(rand_wait(1,20));
+		}
 
-	if(pthread_mutex_trylock(&fork_5) == 0) {
-		if(pthread_mutex_trylock(&fork_1) == 0) {
-			sleep(rand_wait(3,7));
-			think= 0;
+		if(pthread_mutex_trylock(&fork_5) == 0) {
+			if(pthread_mutex_trylock(&fork_1) == 0) {
+				printf("%s\n","Immanuel_Kant: Eating");
+				sleep(rand_wait(2,9));
+				think= 0;
+				pthread_mutex_unlock(&fork_5);
+				pthread_mutex_unlock(&fork_1);
+			} else {
+				pthread_mutex_unlock(&fork_5);
+				pthread_mutex_unlock(&fork_1);
+			}
 		} else {
+			think = 1;
 			pthread_mutex_unlock(&fork_5);
 			pthread_mutex_unlock(&fork_1);
 		}
-	} else {
-		think = 1;
-		pthread_mutex_unlock(&fork_5);
-		pthread_mutex_unlock(&fork_1);
+
 	}
-			
-
-	/*
-		check think flag, if set then think
-		trylock on left fork
-			drop if no lock
-			
-			trylock on right fork
-				drop if no lock
-
-				if locked on both forks, eat.
-				drop forks
-				set flag to think
-		
-	*/
+	
 
 }
 
