@@ -73,7 +73,9 @@ void* immanuel_kant(void* arg)
 		}
 
 		if(pthread_mutex_trylock(&fork_5) == 0) {
+				printf("%s\n","\t\tLOCK\t5" );
 			if(pthread_mutex_trylock(&fork_1) == 0) {
+				printf("%s\n","\t\tLOCK\t1" );
 				int x =0;
 				if(pthread_mutex_trylock(&lock) == 0) {
 					x = rand_wait(2,9);
@@ -83,15 +85,20 @@ void* immanuel_kant(void* arg)
 					think= 0;
 					pthread_mutex_unlock(&fork_5);
 					pthread_mutex_unlock(&fork_1);
+					printf("%s\n","\t\tUNLOCK\t5" );
+					printf("%s\n","\t\tUNLOCK\t1" );
 				}
 			} else {
 				think = 1;
 				pthread_mutex_unlock(&fork_5);
 				pthread_mutex_unlock(&fork_1);
+				printf("%s\n","\t\tUNLOCK\t5" );
+				printf("%s\n","\t\tUNLOCK\t1" );
 			}
 		} else {
 			think = 1;
 			pthread_mutex_unlock(&fork_5);
+			printf("%s\n","\t\tUNLOCK\t5" );
 		}
 	}
 }
@@ -115,7 +122,9 @@ void* friedrich_nietzsche(void* arg)
 		}
 
 		if(pthread_mutex_trylock(&fork_1) == 0) {
+			printf("%s\n","\t\tLOCK\t1" );
 			if(pthread_mutex_trylock(&fork_2) == 0) {
+				printf("%s\n","\t\tLOCK\t2" );
 				int x =0;
 				if(pthread_mutex_trylock(&lock) == 0) {
 					x = rand_wait(2,9);
@@ -125,16 +134,20 @@ void* friedrich_nietzsche(void* arg)
 					think= 0;
 					pthread_mutex_unlock(&fork_1);
 					pthread_mutex_unlock(&fork_2);
+					printf("%s\n","\t\tUNLOCK\t1" );
+					printf("%s\n","\t\tUNLOCK\t2" );
 				}
 			} else {
 				think = 1;
 				pthread_mutex_unlock(&fork_1);
 				pthread_mutex_unlock(&fork_2);
+				printf("%s\n","\t\tUNLOCK\t1" );
+				printf("%s\n","\t\tUNLOCK\t2" );
 			}
 		} else {
 			think = 1;
 			pthread_mutex_unlock(&fork_1);
-			pthread_mutex_unlock(&fork_2);
+			printf("%s\n","\t\tUNLOCK\t1" );
 		}
 	}
 }
@@ -159,7 +172,9 @@ void* rene_descartes(void* arg)
 		}
 
 		if(pthread_mutex_trylock(&fork_2) == 0) {
+			printf("%s\n","\t\tLOCK\t2" );
 			if(pthread_mutex_trylock(&fork_3) == 0) {
+				printf("%s\n","\t\tLOCK\t3" );
 				int x =0;
 				if(pthread_mutex_trylock(&lock) == 0) {
 					x = rand_wait(2,9);
@@ -169,17 +184,21 @@ void* rene_descartes(void* arg)
 					think= 0;
 					pthread_mutex_unlock(&fork_2);
 					pthread_mutex_unlock(&fork_3);
+					printf("%s\n","\t\tUNLOCK\t2" );
+					printf("%s\n","\t\tUNLOCK\t3" );
 				}
 				
 			} else {
 				think = 1;
 				pthread_mutex_unlock(&fork_2);
 				pthread_mutex_unlock(&fork_3);
+				printf("%s\n","\t\tUNLOCK\t2" );
+				printf("%s\n","\t\tUNLOCK\t3" );
 			}
 		} else {
 			think = 1;
 			pthread_mutex_unlock(&fork_2);
-			pthread_mutex_unlock(&fork_3);
+			printf("%s\n","\t\tUNLOCK\t2" );
 		}
 	}
 }
@@ -203,7 +222,9 @@ void* thomas_aquinas(void* arg)
 		}
 
 		if(pthread_mutex_trylock(&fork_3) == 0) {
+			printf("%s\n","\t\tLOCK\t3" );
 			if(pthread_mutex_trylock(&fork_4) == 0) {
+				printf("%s\n","\t\tLOCK\t4" );
 				int x =0;
 				if(pthread_mutex_trylock(&lock) == 0) {
 					x = rand_wait(2,9);
@@ -213,16 +234,20 @@ void* thomas_aquinas(void* arg)
 					think= 0;
 					pthread_mutex_unlock(&fork_3);
 					pthread_mutex_unlock(&fork_4);
+					printf("%s\n","\t\tUNLOCK\t3" );
+					printf("%s\n","\t\tUNLOCK\t4" );
 				}
 			} else {
 				think = 1;
 				pthread_mutex_unlock(&fork_3);
 				pthread_mutex_unlock(&fork_4);
+				printf("%s\n","\t\tUNLOCK\t3" );
+				printf("%s\n","\t\tUNLOCK\t4" );
 			}
 		} else {
 			think = 1;
 			pthread_mutex_unlock(&fork_3);
-			pthread_mutex_unlock(&fork_4);
+			printf("%s\n","\t\tUNLOCK\t3" );
 		}
 	}
 }
@@ -246,7 +271,9 @@ void* john_locke(void* arg)
 		}
 
 		if(pthread_mutex_trylock(&fork_4) == 0) {
+			printf("%s\n","\t\tLOCK\t4" );
 			if(pthread_mutex_trylock(&fork_5) == 0) {
+				printf("%s\n","\t\tLOCK\t5" );
 				int x =0;
 				if(pthread_mutex_trylock(&lock) == 0) {
 					x = rand_wait(2,9);
@@ -256,16 +283,20 @@ void* john_locke(void* arg)
 					think= 0;
 					pthread_mutex_unlock(&fork_4);
 					pthread_mutex_unlock(&fork_5);
+					printf("%s\n","\t\tUNLOCK\t4" );
+					printf("%s\n","\t\tUNLOCK\t5" );
 				}
 			} else {
 				think = 1;
 				pthread_mutex_unlock(&fork_4);
 				pthread_mutex_unlock(&fork_5);
+				printf("%s\n","\t\tUNLOCK\t4" );
+				printf("%s\n","\t\tUNLOCK\t5" );
 			}
 		} else {
 			think = 1;
 			pthread_mutex_unlock(&fork_4);
-			pthread_mutex_unlock(&fork_5);
+			printf("%s\n","\t\tUNLOCK\t4" );
 		}
 	}
 }
