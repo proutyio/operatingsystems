@@ -1,5 +1,13 @@
 /*
- * elevator CLOOK
+ * Elevator CLOOK
+ * 
+ * Written by Nathaniel Whitlock and Kyle Prouty
+ * Group 18 -- CS 444
+ *
+ * Changes were made to the following functions:
+ * - clook_dispatch()
+ * - clook _add_request()
+ * - clook_init_queue
  */
 #include <linux/blkdev.h>
 #include <linux/elevator.h>
