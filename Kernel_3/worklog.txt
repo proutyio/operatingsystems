@@ -1,0 +1,6 @@
+# Kernel Assignment Three
+
+## Worklog
+* Saturday: 1:10 - 2:30pm 11/4/2017
+  -  Set up initial repo directory for kernel assignment number three
+  -  Reviewing assignment specifics and researching things that might help
