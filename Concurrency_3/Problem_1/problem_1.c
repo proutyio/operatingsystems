@@ -74,6 +74,7 @@ int main()
 	*	Spawn maker thread.
 	*	Main thread moves execution to maker thread.
 	*/
+	pthread_mutex_lock(&a_lock);
 	pthread_create(&c_id, NULL, check_lock, NULL);
 	pthread_create(&m_id, NULL, maker, NULL);
 	pthread_join(m_id, NULL);
@@ -100,18 +101,21 @@ void* worker(void* arg)
 
 
 	while(1) {
-		sleep(5);
-
-		if(pthread_mutex_trylock(&a_lock) == 0) {
+		sleep(rand_wait(3,15));
+		if(lock_count < 3) {
+			pthread_mutex_unlock(&a_lock);
 			lock_count++;
-			printf("%s%d\n","Lock Count: ",lock_count );
-			printf("%s%i\n", "WORKER!",id);
-			
-			sleep(5);
-			lock_count--;
-			//pthread_mutex_unlock(&a_lock);
-			break;
+			if(pthread_mutex_trylock(&a_lock) == 0) {
+				printf("%s%d\n","Lock Count: ",lock_count );
+				printf("%s%i\n", "WORKER!",id);
+				
+				sleep(5);
+				lock_count--;
+				thread_count--;
+				//pthread_mutex_unlock(&a_lock);
+				break;
 
+			}
 		}
 	}
 
