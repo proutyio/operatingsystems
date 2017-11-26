@@ -24,24 +24,6 @@
 // Implement a mutual exclusion solution that meets the above constraints.
 
 
-// Lockable process that spawns processes.
-
-// 
-
-/*
-	-main thread just initilizes
-
-	-main thread spawns maker thread that can spawn worker threads
-
-	-maker thread is inf loop, spawns workers, sleeps when resource is full
-
-	-global resource, all threads add to it (int, pid)
-
-	-do workers loop for inf till they lock, then do workers die after they "do work"?
-	
-	-
-
-*/
 
 #define THREADS 12
 
@@ -50,7 +32,7 @@
 */
 void* check_lock();
 void* display();
-void* maker();
+//void* maker();
 void* worker(void* arg);
 int rand_wait(int min, int max);
 
@@ -59,7 +41,7 @@ int rand_wait(int min, int max);
 *	Globally Shared Variables
 */
 int shared_resource = 0;
-int thread_count = 0;
+//int thread_count = 0;
 int lock_count = 0;
 pthread_t p_id[THREADS];
 pthread_t m_id;
@@ -71,53 +53,98 @@ pthread_mutex_t b_lock = PTHREAD_MUTEX_INITIALIZER;
 int main() 
 {
 	/*
-	*	Spawn maker thread.
-	*	Main thread moves execution to maker thread.
+
 	*/
-	pthread_mutex_lock(&a_lock);
-	pthread_create(&c_id, NULL, check_lock, NULL);
-	pthread_create(&m_id, NULL, maker, NULL);
-	pthread_join(m_id, NULL);
+
+	printf("%s\n", "MAKER!");
+
+	for(int x=0; x<THREADS; x++)
+		pthread_create(&p_id[x], NULL, worker, &x);
+
+
+	for(int x=0; x<THREADS; x++)
+		pthread_join(p_id[x], NULL);
+
+
+//d	pthread_mutex_lock(&a_lock);
+//	pthread_create(&c_id, NULL, check_lock, NULL);
+	// pthread_create(&m_id, NULL, maker, NULL);
+	// pthread_join(m_id, NULL);
 	return 0;		
 }
 
 
-void* maker() 
-{
+// void* maker() 
+// {
 
-	printf("%s\n", "MAKER!");
-	while(1) {
-		if(thread_count < THREADS) {
-			pthread_create(&p_id[thread_count], NULL, worker, &thread_count);
-			thread_count++;
-		}
-	}
+// 	printf("%s\n", "MAKER!");
 
-}
+// 	for(int x=0; x<THREADS; x++)
+// 		pthread_create(&p_id[x], NULL, worker, &x);
+
+
+// 	for(int x=0; x<THREADS; x++)
+// 		pthread_join(p_id[x], NULL);
+
+// 	// while(1) {
+// 	// 	if(thread_count < THREADS) {
+// 	// 		
+// 	// 		thread_count++;
+// 	// 	}
+// 	// }
+
+// }
 
 void* worker(void* arg)
 {
 	int id = *((int *) arg);
+	int wait = 0;
 
 
 	while(1) {
-		sleep(rand_wait(3,15));
-		if(lock_count < 3) {
-			pthread_mutex_unlock(&a_lock);
-			lock_count++;
-			if(pthread_mutex_trylock(&a_lock) == 0) {
+		
+		if(!pthread_mutex_trylock(&a_lock)) {
+			
+			// if(lock_count == 2){
+
+			// }
+			if(lock_count < 3){
 				printf("%s%d\n","Lock Count: ",lock_count );
 				printf("%s%i\n", "WORKER!",id);
-				
-				sleep(5);
+				lock_count++;
+				wait = rand_wait(7,15);
+				//lock_count--;
+				pthread_mutex_unlock(&a_lock);
+				sleep(wait);
+				printf("%s%i\n","wake",id );
 				lock_count--;
-				thread_count--;
-				//pthread_mutex_unlock(&a_lock);
-				break;
-
+				//thread_count--;
+				//break;
 			}
+			else
+				pthread_mutex_unlock(&a_lock);
 		}
+
 	}
+
+	// while(1) {
+	// 	sleep(rand_wait(3,15));
+	// 	if(lock_count < 3) {
+	// 		pthread_mutex_unlock(&a_lock);
+	// 		lock_count++;
+	// 		if(pthread_mutex_trylock(&a_lock) == 0) {
+	// 			printf("%s%d\n","Lock Count: ",lock_count );
+	// 			printf("%s%i\n", "WORKER!",id);
+				
+	// 			sleep(5);
+	// 			lock_count--;
+	// 			thread_count--;
+	// 			//pthread_mutex_unlock(&a_lock);
+	// 			break;
+
+	// 		}
+	// 	}
+	// }
 
 
 	//printf("%i\n", thread_count );
