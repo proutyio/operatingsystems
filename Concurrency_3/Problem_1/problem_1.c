@@ -112,12 +112,18 @@ void* worker(void* arg)
 				printf("%s%d\n","Lock Count: ",lock_count );
 				printf("%s%i\n", "WORKER!",id);
 				lock_count++;
-				wait = rand_wait(7,15);
+				wait = rand_wait(2,15);
+
 				//lock_count--;
 				pthread_mutex_unlock(&a_lock);
 				sleep(wait);
 				printf("%s%i\n","wake",id );
-				lock_count--;
+				while(1)
+					if(pthread_mutex_trylock(&a_lock)){
+						lock_count--;
+						break;
+					}
+				
 				//thread_count--;
 				//break;
 			}
@@ -127,27 +133,7 @@ void* worker(void* arg)
 
 	}
 
-	// while(1) {
-	// 	sleep(rand_wait(3,15));
-	// 	if(lock_count < 3) {
-	// 		pthread_mutex_unlock(&a_lock);
-	// 		lock_count++;
-	// 		if(pthread_mutex_trylock(&a_lock) == 0) {
-	// 			printf("%s%d\n","Lock Count: ",lock_count );
-	// 			printf("%s%i\n", "WORKER!",id);
-				
-	// 			sleep(5);
-	// 			lock_count--;
-	// 			thread_count--;
-	// 			//pthread_mutex_unlock(&a_lock);
-	// 			break;
 
-	// 		}
-	// 	}
-	// }
-
-
-	//printf("%i\n", thread_count );
 
 }
 
