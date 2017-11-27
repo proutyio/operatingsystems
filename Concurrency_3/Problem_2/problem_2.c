@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include "mt19937ar.c"
 
-#define THREADS 2
+#define THREADS 4
 #define I_SLEEP 8
 #define S_SLEEP 12
 #define D_SLEEP 14
