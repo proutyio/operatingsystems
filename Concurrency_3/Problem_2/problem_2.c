@@ -14,7 +14,10 @@
 #include <unistd.h>
 #include "mt19937ar.c"
 
-#define THREADS 9
+#define THREADS 2
+#define I_SLEEP 8
+#define S_SLEEP 12
+#define D_SLEEP 14
 #define MAX 20
 
 typedef struct item_list{
@@ -71,7 +74,7 @@ void* search_thread(void* arg)
 		
 		search(head,tmp);
 		printf("%s\t%d\n","S - SEARCH",tmp);
-		sleep(rand()%8);
+		sleep(rand()%S_SLEEP);
 	}
 }
 
@@ -83,7 +86,7 @@ void* insert_thread(void* arg)
 		
 		insert(head,tmp);
 		printf("%s\t%d\n","I - INSERT",tmp);
-		sleep(rand()%4);
+		sleep(rand()%I_SLEEP);
 	}
 }
 
@@ -95,7 +98,7 @@ void* delete_thread(void* arg)
 
 		delete(head,tmp);
 		printf("%s\t%d\n","D - DELETE",tmp);
-		sleep(rand()%6);
+		sleep(rand()%D_SLEEP);
 	}
 }
 
