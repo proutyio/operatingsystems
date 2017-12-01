@@ -318,7 +318,7 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 
 	/* Iterate through lists to find free space */
 	curr = &free_slob_large;
-	list_for_each_entry(sp, curr, list, lru) {
+	list_for_each_entry(sp, curr, lru) {
 	  slob_units_free += sp->units;
 	}
 
