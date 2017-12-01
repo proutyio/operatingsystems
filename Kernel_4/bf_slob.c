@@ -103,7 +103,7 @@ static LIST_HEAD(free_slob_large);
 
 /* Initilize page tracking variables */
 unsigned long slob_pages = 0;
-unsigned long slob_free = 0;
+unsigned long slob_free_units = 0;
 
 /*
  * slob_page_free: true for pages on free_slob_pages list.
@@ -218,7 +218,7 @@ static void slob_free_pages(void *b, int order)
 /*
  * Allocate a slob block within a given slob_page sp.
  */
-static void *slob_page_alloc(struct slob_page *sp, size_t size, int align)
+static void *slob_page_alloc(struct page *sp, size_t size, int align)
 {
   slob_t *prev, *cur, *aligned = NULL;
   int delta = 0, units = SLOB_UNITS(size);
@@ -228,7 +228,7 @@ static void *slob_page_alloc(struct slob_page *sp, size_t size, int align)
   int bf_delta = 0;
   slobidx_t bf_diff = 0;
 
-  for (prev = NULL, cur = sp->free; ; prev = cur, cur = slob_next(cur)) {
+  for (prev = NULL, cur = sp->freelist; ; prev = cur, cur = slob_next(cur)) {
     slobidx_t avail = slob_units(cur);
     
     if (align) {
@@ -239,7 +239,7 @@ static void *slob_page_alloc(struct slob_page *sp, size_t size, int align)
     /* Check if enough room */
     if (avail >= units + delta) {
       /* Check if best-fit variables need update or inititialization */
-      if (avail - (units + delta) < bf_diff || bf_cur == NULL) { 
+      if ((avail - (units + delta)) < bf_diff || bf_cur == NULL) { 
 	bf_prev = prev;
 	bf_cur = cur;
 	bf_aligned = aligned;
@@ -268,12 +268,12 @@ static void *slob_page_alloc(struct slob_page *sp, size_t size, int align)
 	  if (bf_prev)
 	    set_slob(bf_prev, slob_units(bf_prev), bf_next);
 	  else
-	    sp->free = bf_next;
+	    sp->freelist = bf_next;
 	} else { /* fragment */
 	  if (bf_prev)
 	    set_slob(bf_prev, slob_units(bf_prev), bf_cur + units);
 	  else
-	    sp->free = bf_cur + units;
+	    sp->freelist = bf_cur + units;
 	  
 	  set_slob(bf_cur + units, bf_avail - units, bf_next);
 	}
@@ -300,7 +300,7 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 	struct list_head *curr;
 	slob_t *b = NULL;
 	unsigned long flags;
-	slob_free = 0;
+	slob_free_units = 0;
 
 	if (size < SLOB_BREAK1)
 		slob_list = &free_slob_small;
@@ -341,18 +341,18 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 
 	/* Iterate through lists to find free space */
 	curr = &free_slob_large;
-	list_for_each_entry(sp, curr, list, lru) {
-	  slob_free += sp->units;
+	list_for_each_entry(sp, curr, lru) {
+	  slob_free_units += sp->units;
 	}
 
 	curr = &free_slob_medium;
 	list_for_each_entry(sp, curr, lru) {
-	  slob_free += sp->units;
+	  slob_free_units += sp->units;
 	}
 
 	curr = &free_slob_small;
 	list_for_each_entry(sp, curr, lru) {
-	  slob_free += sp->units;
+	  slob_free_units += sp->units;
 	}
 
 	spin_unlock_irqrestore(&slob_lock, flags);
@@ -701,5 +701,5 @@ asmlinkage long sys_slob_used(void)
 
 asmlinkage long sys_free_slob(void)
 {
-  return slob_free;
+  return slob_free_units;
 }
